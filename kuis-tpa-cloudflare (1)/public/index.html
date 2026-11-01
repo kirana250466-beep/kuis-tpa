@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kuis TPA: 7 Jurus Terlarang</title>
+<style>
+:root{--bg:#f6f4ef;--card:#fff;--ink:#1f2328;--mut:#666d78;--line:#e2ddd2;--ac:#1d5fd1;--acf:#fff;--ok:#157a3d;--okb:#e3f5e9;--bad:#b3261e;--badb:#fde8e6;--warn:#8a5a00;--warnb:#fff3d6;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14161a;--card:#1d2026;--ink:#e8e8e6;--mut:#a0a4ad;--line:#2d313a;--ac:#7aa7ff;--acf:#0b1b3a;--ok:#5fd68a;--okb:#12301d;--bad:#ff8a80;--badb:#3a1714;--warn:#f2c46b;--warnb:#33270a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#14161a;--card:#1d2026;--ink:#e8e8e6;--mut:#a0a4ad;--line:#2d313a;--ac:#7aa7ff;--acf:#0b1b3a;--ok:#5fd68a;--okb:#12301d;--bad:#ff8a80;--badb:#3a1714;--warn:#f2c46b;--warnb:#33270a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:760px;margin:0 auto;padding:16px}
+h1{font-size:1.45rem;margin:.1em 0}h2{font-size:1.1rem;margin:.1em 0 .6em}
+.c{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 14px}
+.btn{font:inherit;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 14px;border-radius:10px;cursor:pointer}
+.btn.p{background:var(--ac);color:var(--acf);border-color:var(--ac);font-weight:600}
+.btn:disabled{opacity:.5;cursor:default}
+input{font:inherit;width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);margin:6px 0 12px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.sp{justify-content:space-between}
+.chip{display:inline-block;padding:2px 10px;border-radius:99px;font-size:.8rem;background:var(--line)}
+.chip.on{background:var(--okb);color:var(--ok)}.chip.ps{background:var(--warnb);color:var(--warn)}.chip.of{background:var(--badb);color:var(--bad)}
+.bar{height:8px;background:var(--line);border-radius:9px;overflow:hidden;margin:8px 0}
+.bar i{display:block;height:100%;background:var(--ac);width:100%;transition:width .5s linear}.bar i.lo{background:var(--bad)}
+.op{display:flex;gap:10px;width:100%;text-align:left;margin:8px 0;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;align-items:flex-start}
+button.op{cursor:pointer}button.op:disabled{cursor:default}
+.op b{min-width:1.6em}.op.ok{border-color:var(--ok);background:var(--okb)}.op.bad{border-color:var(--bad);background:var(--badb)}
+.hint{border-radius:10px;padding:10px 12px;margin:10px 0}
+.q img{max-width:100%;height:auto;background:#fff;border-radius:8px}
+.q table,.bh table{border-collapse:collapse;margin:8px 0;max-width:100%;display:block;overflow-x:auto}
+.q td,.bh td,.bh th{border:1px solid var(--line);padding:4px 10px}
+math{font-size:1.1em}math[display="block"]{display:block math;margin:.5em 0;overflow-x:auto}
+.bh{border-top:1px dashed var(--line);margin-top:10px;padding-top:8px}
+table.t{width:100%;border-collapse:collapse;font-size:.9rem}table.t td,table.t th{padding:6px;border-bottom:1px solid var(--line);text-align:left}
+.mut{color:var(--mut)}
+</style>
+</head>
+<body>
+<div id="app" class="w"></div>
+<script>
+let Q=[],PEMB={},PIN='',OFF=0;
+const T=n=>n<=5?30:n<=30?210:60,LK='tpa7:',A=document.getElementById('app'),now=()=>Date.now()+OFF;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let S=undefined,P=null,nama='',uid='',guru=false,canW=true,view='login',stu=[],note='',armed='',chain=Promise.resolve();
+const api=(p,o={})=>fetch('/api/'+p,{cache:'no-store',...o,headers:{'content-type':'application/json','x-guru-pin':PIN}});
+const inact=()=>S?(S.pz||0)+(S.pzAt?now()-S.pzAt:0):0;
+const fresh=()=>({nama,e:S?S.epoch:0,i:0,a:{},t0:null,ip0:0,u:0});
+const slug=s=>s.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'x'+[...s].reduce((h,c)=>(h*31+c.charCodeAt(0))|0,7).toString(36);
+const fmt=r=>{const s=Math.ceil(r);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+function sc(p){let b=0,s=0,h=0;Q.forEach((q,k)=>{const v=p.a&&p.a[k];if(v===undefined)return;if(v==='-')h++;else if(v===q.kunci)b++;else s++});return{b,s,h}}
+function lget(){try{return JSON.parse(localStorage.getItem(LK+uid))}catch(e){return null}}
+function save(){
+  P.u=Date.now();const d=JSON.parse(JSON.stringify(P));
+  try{localStorage.setItem(LK+uid,JSON.stringify(d))}catch(e){}
+  chain=chain.then(()=>api('progres/'+uid,{method:'PUT',body:JSON.stringify(d)}).then(r=>{canW=r.ok})).catch(()=>{canW=false});
+}
+function sync(){if(S&&P&&P.e!==S.epoch){P=fresh();save()}}
+function ensureT(){if(S&&S.status==='on'&&P&&P.i<Q.length&&P.a[P.i]===undefined&&P.t0==null){P.t0=now();P.ip0=inact();save()}}
+const rem=q=>Math.max(0,T(q.n)-(now()-P.t0-(inact()-P.ip0))/1000);
+
+async function poll(){
+  if(view==='login')return;
+  try{
+    const r=await api('sesi');if(!r.ok)throw 0;const j=await r.json();
+    OFF=j.now-Date.now();const o=JSON.stringify(S);S=j.sesi;
+    if(o!==JSON.stringify(S)){sync();if(view==='guru')rCtl();else render()}
+  }catch(e){if(S===undefined){S=null;if(view==='quiz')render()}}
+  if(view==='guru')try{const r=await api('progres');if(r.ok){stu=await r.json();rStu()}}catch(e){}
+}
+async function login(raw,pin){
+  nama=raw.trim().replace(/\s+/g,' ').slice(0,40);if(!nama)return;
+  try{localStorage.setItem(LK+'last',nama)}catch(e){}
+  guru=nama.toLowerCase()==='ferdi';uid=slug(nama);
+  if(guru){
+    PIN=pin||'';
+    try{
+      const r=await api('pembahasan');
+      if(r.status===401){rLogin(PIN?'PIN salah.':'Masukkan PIN guru.',true);return}
+      if(!r.ok)throw 0;PEMB=await r.json();
+    }catch(e){rLogin('Tidak bisa terhubung ke server.',false);return}
+    view='guru';P=null;render();await poll();return;
+  }
+  PIN='';view='quiz';P=null;render();await poll();
+  const L=lget();let R=null;
+  try{const r=await api('progres/'+uid);if(r.ok)R=await r.json()}catch(e){}
+  P=(R&&(!L||(R.u||0)>=(L.u||0)))?R:L;
+  if(!P)P=fresh();else P.nama=nama;
+  sync();render();
+}
+function logout(){view='login';P=null;guru=false;PIN='';render()}
+function jawab(h){
+  if(!S||S.status!=='on'||!P||P.i>=Q.length||P.a[P.i]!==undefined||P.t0==null)return;
+  const q=Q[P.i];P.a[P.i]=rem(q)<=0?'-':h;save();render();
+}
+function lanjut(){P.i++;P.t0=null;ensureT();if(P.t0==null)save();render()}
+async function ctl(a){
+  if(!guru||!S)return;
+  if(a==='mulai'&&armed!=='mulai'){armed='mulai';rCtl();setTimeout(()=>{armed='';rCtl()},4000);return}
+  armed='';note='';
+  try{
+    const r=await api('sesi',{method:'POST',body:JSON.stringify({aksi:a})});if(!r.ok)throw 0;
+    const j=await r.json();OFF=j.now-Date.now();S=j.sesi;
+  }catch(e){note='Perintah gagal dikirim.'}
+  rCtl();
+}
+
+function hdr(){return`<div class="row sp" style="margin-bottom:10px"><b>${esc(nama)}</b>${!canW&&!guru?'<span class="mut" style="font-size:.8rem">Progres tersimpan di perangkat ini</span>':''}<button class="btn" data-a="out">Keluar</button></div>`}
+function lock(t,m){A.innerHTML=hdr()+`<div class="c"><h2>${t}</h2><p class="mut">${m}</p></div>`}
+function render(){view==='login'?rLogin():view==='guru'?rGuru():rQuiz()}
+function rLogin(msg,needPin){
+  let last=nama;if(!last)try{last=localStorage.getItem(LK+'last')||''}catch(e){}
+  A.innerHTML=`<div class="c"><h1>Kuis TPA</h1><p class="mut">7 Jurus Terlarang · ${Q.length} soal</p><label for="nm">Nama kamu</label><input id="nm" maxlength="40" autocomplete="off" value="${esc(last)}" placeholder="Tulis nama bebas">${needPin?'<label for="pin">PIN guru</label><input id="pin" type="password" autocomplete="off">':''}${msg?`<p style="color:var(--bad)">${esc(msg)}</p>`:''}<button class="btn p" data-a="login">Masuk</button><p class="mut" style="font-size:.9rem">Masuk lagi dengan nama yang sama untuk melanjutkan ke soal berikutnya.</p></div>`;
+}
+function rQuiz(){
+  if(S===undefined||!P){A.innerHTML=hdr()+'<div class="c">Menghubungkan ke kelas…</div>';return}
+  if(S===null){lock('Tidak bisa terhubung','Server kelas tidak merespons. Periksa koneksi lalu muat ulang halaman ini.');return}
+  if(P.i>=Q.length){rDone();return}
+  if(S.status==='off'){lock('Sesi belum dimulai','Guru belum mengaktifkan sesi. Halaman ini terbuka otomatis saat sesi dimulai.');return}
+  ensureT();
+  const q=Q[P.i],h=P.a[P.i],ans=h!==undefined,pz=S.status==='paused',lim=T(q.n),r=P.t0==null?lim:rem(q),c=sc(P);
+  const op=(q.opsi||['','','','','']).map((o,k)=>{const L='ABCDE'[k];let x='';if(ans){if(L===q.kunci)x=' ok';else if(L===h)x=' bad'}return`<button class="op${x}" data-h="${L}"${ans||pz?' disabled':''}><b>${L}.</b><span>${o}</span></button>`}).join('');
+  let fb='';
+  if(ans){const ok=h===q.kunci;fb=`<div class="hint" style="background:var(--${ok?'okb':'badb'});color:var(--${ok?'ok':'bad'})"><b>${ok?'Benar!':h==='-'?'Waktu habis.':'Salah.'}</b>${ok?'':' Jawaban yang benar: '+q.kunci+'.'}</div><button class="btn p" data-a="next">${P.i+1>=Q.length?'Lihat hasil':'Lanjut →'}</button>`}
+  A.innerHTML=hdr()+`<div class="row sp"><span>Soal <b>${q.n}</b> dari ${Q.length}</span><span class="chip">${esc(q.kat)}</span><span class="mut">Benar ${c.b} · Salah ${c.s+c.h}</span></div>`
+   +(ans?'':`<div class="row sp"><span class="mut">Sisa waktu</span><b id="tm">${fmt(r)}</b></div><div class="bar"><i id="tb" class="${r<=10?'lo':''}" style="width:${r/lim*100}%"></i></div>`)
+   +(pz?'<div class="hint" style="background:var(--warnb);color:var(--warn)">Sesi dijeda guru. Timer berhenti, tunggu guru melanjutkan.</div>':'')
+   +`<div class="c q" style="margin-top:8px">${q.img?`<img src="${q.img}" alt="Soal ${q.n}"><p class="mut">Pilih pilihan yang paling tepat untuk melengkapi analogi di atas.</p>`:q.teks}</div>${op}${fb}`;
+}
+function rDone(){
+  const c=sc(P);
+  A.innerHTML=hdr()+`<div class="c"><h1>Selesai</h1><p>Benar <b>${c.b}</b> dari ${Q.length} soal. Salah ${c.s}, waktu habis ${c.h}.</p><div class="row">${Q.map((q,k)=>{const v=P.a[k];const ok=v===q.kunci;return`<span class="chip ${ok?'on':'of'}">${q.n}${ok?' ✓':v==='-'?' ⏱':' ✗'}</span>`}).join('')}</div></div>`;
+}
+function rGuru(){
+  A.innerHTML=hdr()+`<div class="c"><h2>Kontrol kelas</h2><div id="ctl"></div></div><div class="c"><h2>Progres siswa (sesi ini)</h2><div id="st"></div></div><h2>Soal dan pembahasan</h2>`
+   +Q.map(q=>`<div class="c q"><div class="row sp"><b>Soal ${q.n}</b><span class="chip">${esc(q.kat)}</span></div>${q.img?`<img src="${q.img}" alt="Soal ${q.n}">`:q.teks}${q.opsi?q.opsi.map((o,k)=>`<div class="op${'ABCDE'[k]===q.kunci?' ok':''}"><b>${'ABCDE'[k]}.</b><span>${o}</span></div>`).join(''):''}<p><b>Kunci: ${q.kunci}</b> ${q.sumber?`<span class="mut">${esc(q.sumber)}</span>`:''}</p><div class="bh"><b>Pembahasan</b>${PEMB[q.n]||''}</div></div>`).join('');
+  rCtl();rStu();
+}
+function rCtl(){
+  const e=document.getElementById('ctl');if(!e)return;
+  if(S===null){e.innerHTML='<p class="mut">Tidak bisa terhubung ke server.</p>';return}
+  if(!S){e.innerHTML='<p class="mut">Menghubungkan…</p>';return}
+  const st=S.status;
+  e.innerHTML=`<p>Halaman siswa: <span class="chip ${{on:'on',paused:'ps',off:'of'}[st]}">${{on:'Aktif',paused:'Dijeda',off:'Mati'}[st]}</span> <span class="mut">${S.epoch?'Sesi ke-'+S.epoch:'Belum ada sesi'}</span></p><div class="row"><button class="btn p" data-a="mulai">${armed==='mulai'?'Yakin? Klik lagi':'Mulai baru'}</button>`
+   +(st==='off'&&S.epoch>0?'<button class="btn" data-a="aktif">Aktifkan kembali</button>':'')
+   +(st!=='off'?`<button class="btn" data-a="jeda">${st==='paused'?'Lanjutkan':'Jeda'}</button><button class="btn" data-a="mati">Matikan</button>`:'')
+   +'</div><p class="mut" style="font-size:.85rem">Mulai baru: sesi baru dengan progres siswa dari nol. Aktifkan kembali: lanjut sesi yang sama.</p>'
+   +(note?`<p style="color:var(--bad)">${esc(note)}</p>`:'');
+}
+function rStu(){
+  const e=document.getElementById('st');if(!e)return;
+  const L=stu.filter(x=>S&&x.e===S.epoch);
+  if(!L.length){e.innerHTML='<p class="mut">Belum ada siswa pada sesi ini.</p>';return}
+  e.innerHTML='<table class="t"><tr><th>Nama</th><th>Soal</th><th>Benar</th><th>Salah</th><th>Habis</th></tr>'+L.map(x=>{const c=sc(x);return`<tr><td>${esc(x.nama||'')}</td><td>${Math.min((x.i||0)+1,Q.length)}</td><td>${c.b}</td><td>${c.s}</td><td>${c.h}</td></tr>`}).join('')+'</table>';
+}
+function tick(){
+  if(view!=='quiz'||!P||!S||S.status!=='on'||P.i>=Q.length||P.a[P.i]!==undefined)return;
+  ensureT();const q=Q[P.i],lim=T(q.n),r=rem(q),tm=document.getElementById('tm'),tb=document.getElementById('tb');
+  if(tm)tm.textContent=fmt(r);
+  if(tb){tb.style.width=r/lim*100+'%';tb.className=r<=10?'lo':''}
+  if(r<=0){P.a[P.i]='-';save();render()}
+}
+A.addEventListener('click',e=>{
+  const b=e.target.closest('[data-a],[data-h]');if(!b)return;
+  if(b.dataset.h){jawab(b.dataset.h);return}
+  const a=b.dataset.a,v=id=>(document.getElementById(id)||{}).value||'';
+  if(a==='login')login(v('nm'),v('pin'));
+  else if(a==='out')logout();
+  else if(a==='next')lanjut();
+  else ctl(a);
+});
+A.addEventListener('keydown',e=>{if(e.key==='Enter'&&(e.target.id==='nm'||e.target.id==='pin'))login((document.getElementById('nm')||{}).value||'',(document.getElementById('pin')||{}).value||'')});
+(async()=>{
+  try{Q=await(await fetch('/soal.json')).json()}catch(e){A.innerHTML='<div class="c">Gagal memuat soal. Muat ulang halaman.</div>';return}
+  render();setInterval(poll,3000);setInterval(tick,500);
+})();
+</script>
+</body>
+</html>
